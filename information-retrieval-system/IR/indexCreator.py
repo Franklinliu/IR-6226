@@ -122,10 +122,11 @@ class IndexBuilder:
     def constructTrieIndex(self):
         self.trieIndex = trie('root')
         with open("./output/items.txt", "w") as f:
+            f.write("{}\n{}\n{}\n{}\n".format("term","postingList", "tf", "df"))
             for termPage, postingList in self.index.items():
-                f.write(termPage+"\n")
                 idfData = math.log(float(self.docCount)/float(self.df[termPage]), 10)
                 self.trieIndex[termPage] = (postingList, self.tf[termPage], idfData)
+                f.write("{}\n{}\n{}\n{}\n".format(termPage,postingList, self.tf[termPage], idfData))
 
 
     def saveTrieIndexToFile(self):
