@@ -121,9 +121,12 @@ class IndexBuilder:
 
     def constructTrieIndex(self):
         self.trieIndex = trie('root')
-        for termPage, postingList in self.index.items():
-            idfData = math.log(float(self.docCount)/float(self.df[termPage]), 10)
-            self.trieIndex[termPage] = (postingList, self.tf[termPage], idfData)
+        with open("./output/items.txt", "w") as f:
+            for termPage, postingList in self.index.items():
+                f.write(termPage+"\n")
+                idfData = math.log(float(self.docCount)/float(self.df[termPage]), 10)
+                self.trieIndex[termPage] = (postingList, self.tf[termPage], idfData)
+
 
     def saveTrieIndexToFile(self):
         pickleDumpProtocol = -1

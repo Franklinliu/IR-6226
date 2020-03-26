@@ -7,8 +7,6 @@ from nltk.corpus import wordnet as wn
 from nltk.stem.porter import PorterStemmer
 import re
 from textProcessing import Stemmer
-import nltk
-nltk.download('wordnet')
 
 stemmer = Stemmer()
 
