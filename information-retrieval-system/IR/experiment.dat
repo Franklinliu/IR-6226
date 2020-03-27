@@ -1,0 +1,32 @@
+python indexCreator.py ./output/emaildataset.xml ./output/trieIndex.dat ./output/postingList.dat
+《《《
+total time: 57.84756803512573; time for each index:0.0013654888120839801 second
+》》》
+
+python documentRetriever.py ./output/trieIndex.dat
+《《《
+1 justice sensitive Muslims
+[3983]
+query#1: justice sensitive Muslims
+ 1 second
+
+total time:0.7388591766357422 time for each query:0.7388591766357422 millisecond
+1 justice sensitive Muslims diplomacy Court
+[4559, 3983, 6092, 1997, 6081, 7770, 4084, 7191]
+query#1: justice sensitive Muslims diplomacy Court
+ 2 second
+
+total time:1.928091049194336 time for each query:1.928091049194336 millisecond
+1 justice sensitive Muslims diplomacy shake Supreme Court
+[1997, 4559, 3983, 6092, 6081, 7770, 4084, 7191]
+query#1: justice sensitive Muslims diplomacy shake Supreme Court
+ 3 second
+
+total time:2.5250911712646484 time for each query:2.5250911712646484 millisecond
+1 justice sensitive Muslims diplomacy shake and follow Supreme Court draft
+[1997, 2687, 6626, 4559, 3983, 1755, 1584, 1582, 6692, 2485, 811, 6092, 5287, 3840, 3587, 3287, 2476, 2391, 6081, 7180, 3796, 3791, 2229, 7761, 4870, 596, 7770, 4084, 7065, 7050, 6336, 6319, 3793, 2908, 573, 6693, 7191, 4080, 94, 7574, 2705, 1371, 1109, 6232, 7583, 6874, 6959, 6143, 376, 375, 5867, 7586, 7063, 2336, 91, 1936]
+query#1: justice sensitive Muslims diplomacy shake and follow Supreme Court draft
+ 3 second
+
+total time:3.935098648071289 time for each query:3.935098648071289 millisecond
+》》》

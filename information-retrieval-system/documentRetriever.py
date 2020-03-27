@@ -155,4 +155,4 @@ if __name__=='__main__':
     q = DocumentRetriever()
     # q.setupDocumentRetriever()
     # DEBUG
-    q.evaluateOnQuerySet("query.text", "results.text")
+    q.evaluateOnQuerySet("query.txt", "results.text")

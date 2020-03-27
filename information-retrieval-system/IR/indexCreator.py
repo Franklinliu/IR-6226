@@ -11,8 +11,9 @@ from collections import defaultdict
 from array import array
 import math
 from textProcessing import Stemmer
-stemmer = Stemmer()
 from patricia import trie
+import  time
+stemmer = Stemmer()
 
 # import nltk
 # nltk.download("punkt")
@@ -145,10 +146,11 @@ class IndexBuilder:
         return normalizationConst
 
     def buildIndex(self):
+        start = time.time()
         self.parseArgs()
         self.dataset=open(self.datasetFile,'r')
 
-        pagedict={}
+        count = 0
         pagedict=self.parseDataset()
         while pagedict != {}:
             lines='\n'.join((pagedict['from'],pagedict['to'],pagedict['subject'], pagedict["message"]))
@@ -178,10 +180,14 @@ class IndexBuilder:
 
             # Increments and reads and parses the next doc
             pagedict=self.parseDataset()
+            count += len(termdictPage.keys())
 
         self.constructTrieIndex()
         self.writePostingListToFile()
         self.saveTrieIndexToFile()
+        end = time.time()
+        print("index number:{}\n".format(count))
+        print("total time: {}; time for each index:{} milli second\n".format(int(1000*(end-start), int(1000*(end-start)/count))))
 
 
 if __name__=="__main__":

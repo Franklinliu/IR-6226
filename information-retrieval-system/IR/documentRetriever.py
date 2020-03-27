@@ -12,7 +12,7 @@ import math
 import time
 from textProcessing import Stemmer
 from collections import defaultdict
-
+import  time
 stemmer = Stemmer()
 
 class DocumentRetriever:
@@ -142,7 +142,7 @@ class DocumentRetriever:
 
             else:
                 line = dataset.readline()
-
+        tstart = time.time()
         for id, q in document.items():
             print(id, q)
             # DEBUG (to compute MAP)
@@ -150,17 +150,22 @@ class DocumentRetriever:
                 start = int(round(time.time() * 1000))
                 results = self.getRelevantDocuments(q)
                 stop = int(round(time.time() * 1000))
-                t = "query#{}: {}\n {} second\n".format(id, q, stop-start)
+                t = "query#{}: {}\n {} milli second\n".format(id, q, stop-start)
                 print(t)
                 output.write(t)
                 for doc_id in results:
                     doc = "HillaryEmails/HillaryEmails/{}.txt\n".format(doc_id)
-                    print(doc)
+                    # print(doc)
                     output.write(doc)
-
+        tend = time.time()
+        print("total time:{} time for each query:{} millisecond".format(((tend-tstart)*1000), (1000*(tend-tstart)/len(document.items()))))
 
 if __name__=='__main__':
     q = DocumentRetriever()
     # q.setupDocumentRetriever()
     # DEBUG
-    q.evaluateOnQuerySet("./query/query.text", "./query/results.text")
+    q.evaluateOnQuerySet("./query/query.txt", "./query/results.text")
+    q.evaluateOnQuerySet("./query/query3.txt", "./query/results3.text")
+    q.evaluateOnQuerySet("./query/query5.txt", "./query/results5.text")
+    q.evaluateOnQuerySet("./query/query7.txt", "./query/results7.text")
+    q.evaluateOnQuerySet("./query/query10.txt", "./query/results10.text")

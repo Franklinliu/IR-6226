@@ -1,0 +1,61 @@
+\documentclass[varwidth=20cm]{standalone}
+\usepackage{minted}                                                                                
+\begin{document}         
+\definecolor{dkgreen}{rgb}{0,0.6,0}                                                                
+\setminted[solidity]{fontsize=\footnotesize,xleftmargin=13pt,numbersep=5pt,linenos=true,highlightlines={17,25,33,44,48},texcomments,breaklines}
+\begin{minted}{solidity}
+contract CreditController{
+	...// 
+	function transferCredit(
+		bytes32[6] bytes32Array,
+		address targetOwner,
+		uint128 transferAmt,
+		string targetCustDataHash,
+		string splitCustDataHash
+	)
+	public
+	returns(bool)
+	{
+		if(!transferAndDiscountCheck(bytes32Array[0], bytes32Array[1], bytes32Array[2], bytes32Array[5], transferAmt, TRANSFER_WECREDIT)){
+		return false;
+	    }
+	
+		Credit credit = Credit(_creditMap.getCredit(bytes32Array[0]));
+		
+		uint32 targetAccountCheckCode = accountIsOk(bytes32Array[3]);
+		if(targetAccountCheckCode != ACCOUNT_OK){
+			commonCheckEvent(bytes32Array[5], bytes32Array[3], targetAccountCheckCode, TRANSFER_WECREDIT);
+			return false;
+		}
+		
+		uint128 sourceNewAmt = credit.getCreditAmt() - transferAmt;
+		bytes32[11] memory tempBytes32Array = credit.getCreditBytes32Array();
+		
+		tempBytes32Array[0] = bytes32Array[4];
+		tempBytes32Array[3] = bytes32Array[0];
+		
+		if(sourceNewAmt > 0 ) {
+			tempBytes32Array[1] = bytes32Array[1];
+			Credit spiltCredit = new Credit(tempBytes32Array, sourceNewAmt, splitCustDataHash, tx.origin);
+			_creditMap.addCredit(bytes32Array[1], spiltCredit);
+			creditEvent(staticArrayToDynamicArray(tempBytes32Array), sourceNewAmt, tx.origin, spiltCredit, now, TRANSFER_CREDIT_SPILT);
+		}
+		
+		tempBytes32Array[1] = bytes32Array[2];
+		tempBytes32Array[2] = bytes32Array[2];
+		tempBytes32Array[5] = bytes32Array[3];
+		if(targetOwner == 0x00){
+			targetOwner = tx.origin;
+		}
+		Credit targetCredit = new Credit(tempBytes32Array, transferAmt, targetCustDataHash, targetOwner);
+		_creditMap.addCredit(bytes32Array[2], targetCredit);
+		creditEvent(staticArrayToDynamicArray(tempBytes32Array), transferAmt, targetOwner, targetCredit, now, TRANSFER_CREDIT_TARGET);
+		
+		credit.updateCreditHoldingStatus(CREDIT_HOLAING_INVALID_STATUS);
+		creditEvent(staticArrayToDynamicArray(credit.getCreditBytes32Array()), credit.getCreditAmt(), credit.getCreditOwner(), credit, now, TRANSFER_CREDIT_SOURCE);
+		commonCheckEvent(bytes32Array[5], bytes32Array[0], TRANSACTION_SUCCESS, TRANSFER_WECREDIT);
+		return true;
+	}
+}
+\end{minted}                                                                                       
+\end{document}   

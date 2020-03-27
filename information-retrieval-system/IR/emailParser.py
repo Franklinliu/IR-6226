@@ -9,8 +9,10 @@ import xml.etree.cElementTree as ET
 from xml.dom import minidom
 from xml.parsers.expat import ExpatError
 
+error_file_size = 0
 def getEmail(mail_file):
     def readEmail(mail_file):
+        global error_file_size
         with open(mail_file) as f:
             lines = f.readlines()
         actual_email = lines[:-8]
@@ -21,6 +23,7 @@ def getEmail(mail_file):
             return True, "".join(actual_email[startLine:])
         except IndexError as err:
             print("from missing error happened in {}".format(mail_file))
+            error_file_size = error_file_size + os.path.getsize(mail_file)
             return False, ""
     
     flag, email_text  = readEmail(mail_file)
@@ -85,6 +88,7 @@ LIMIT = 200000
 Warning = set()
 # Warning.add(9)
 def parseDataset(directory, batchRoot):
+    global error_file_size
     dataset = parseDirectory(directory)
     count = 0
     for item in dataset:
@@ -107,10 +111,14 @@ def parseDataset(directory, batchRoot):
                     addDocument(batchRoot, doc_id, document)
                 else:
                     print("XMLCompatibility: error happened in {}".format(doc_file))
+                    error_file_size += os.path.getsize(doc_file)
+
             except IndexError as err:
                 print("IndexError: other key missing error happened in {}".format(doc_file))
+                error_file_size += os.path.getsize(doc_file)
             except AttributeError as err:
                 print("AttributeError: unknown missing error happened in {}".format(doc_file))
+                error_file_size += os.path.getsize(doc_file)
 
 # Generating XML
 dataFileObject = open("./output/emaildataset.xml", "w")
@@ -123,3 +131,4 @@ tree = prettyPrintXML(root)
 if tree:
     dataFileObject.write(tree)
 dataFileObject.close()
+print("error_file_size:{}M".format(int(error_file_size/(1024*1024))))
